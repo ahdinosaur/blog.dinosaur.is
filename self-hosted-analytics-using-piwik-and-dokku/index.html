@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Self-Hosted Analytics Using Piwik and Dokku | life as a hippie hacker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="shortcut icon" href="http://dinosaur.is/favicon.ico">
+  <link rel="stylesheet" href="/css/app.css">
+  <!-- <link rel='stylesheet' href='http://fonts.useso.com/css?family=Source+Code+Pro'> -->
+  
+</head>
+
+<body>
+  <nav class="app-nav">
+  
+    
+      <a href="/.">home</a>
+    
+  
+    
+      <a href="/archives">archive</a>
+    
+  
+    
+      <a href="/atom.xml">rss</a>
+    
+  
+</nav>
+
+  <main class="post">
+  <article>
+  <h1 class="article-title">
+    <a href="/self-hosted-analytics-using-piwik-and-dokku/">Self-Hosted Analytics Using Piwik and Dokku</a>
+  </h1>
+
+  <section class="article-meta">
+    <p class="article-date">September 20 2015</p>
+  </section>
+
+  <section class="article-entry">
+    <p>Hi friend! :)</p>
+<p>This is a guide to help you host your own analytics using <a href="http://piwik.org/" target="_blank" rel="noopener">piwik</a> and <a href="https://github.com/progrium/dokku" target="_blank" rel="noopener">dokku</a>.</p>
+<p><strong>This guide is a little rough around the edges, I can’t guarantee that everything works. If it does or does not, <a href="http://dinosaur.is" target="_blank" rel="noopener">message me</a>! &lt;3</strong></p>
+<p>Last tested with <a href="https://github.com/piwik/piwik/releases/tag/2.14.3" target="_blank" rel="noopener">Piwik 2.14.3</a> and <a href="https://github.com/progrium/dokku/releases/tag/v0.3.26" target="_blank" rel="noopener">Dokku v0.3.26</a>.</p>
+<h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><p>This guide assumes:</p>
+<ul>
+<li>You have a dokku setup ready to go. If not i recommend following the instructions <a href="https://github.com/progrium/dokku#installing" target="_blank" rel="noopener">here</a>, or for maximum ease using the <a href="https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-dokku-application" target="_blank" rel="noopener">one-click Digital Ocean install</a>.</li>
+<li>You have a <a href="https://github.com" target="_blank" rel="noopener">GitHub</a> account. if not, <a href="https://github.com/join" target="_blank" rel="noopener">make one</a>.</li>
+</ul>
+<p>For reference, here are the vanilla <a href="http://piwik.org/docs/installation/" target="_blank" rel="noopener">Piwiki installation instructions</a>.</p>
+<h2 id="Step-1-Fork-piwik-repository"><a href="#Step-1-Fork-piwik-repository" class="headerlink" title="Step 1: Fork piwik repository"></a>Step 1: Fork piwik repository</h2><p>Go to <a href="https://github.com/piwik/piwik" target="_blank" rel="noopener">piwik/piwik</a> and click on the top right “Fork” button to fork the project as your current user. Now, in your new piwik repo, click on “Settings”, then rename your repo to <code>analytics.&lt;your-dokku-domain.tld&gt;</code>.</p>
+<p>Next, clone your piwik repo to your local machine with</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/&lt;your-name&gt;/analytics.&lt;your-dokku-domain.tld&gt;</span><br><span class="line"><span class="built_in">cd</span> analytics.&lt;your-dokku-domain.tld&gt;</span><br></pre></td></tr></table></figure>
+<p>Add the dokku remotes</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add dokku dokku@&lt;your-dokku-domain.tld&gt;:analytics</span><br></pre></td></tr></table></figure>
+<p>Push to dokku!</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push dokku master</span><br></pre></td></tr></table></figure>
+<p>It won’t work, but soon. :p</p>
+<h2 id="Step-2-Install-dokku-plugins"><a href="#Step-2-Install-dokku-plugins" class="headerlink" title="Step 2: Install dokku plugins"></a>Step 2: Install dokku plugins</h2><p>Let’s install some plugins. :) To do this, login to our dokku server with <code>ssh root@&lt;your-dokku-domain.tld&gt;</code>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /var/lib/dokku/plugins</span><br></pre></td></tr></table></figure>
+<h3 id="mariadb"><a href="#mariadb" class="headerlink" title="mariadb"></a><a href="https://github.com/krisrang/dokku-mariadb" target="_blank" rel="noopener">mariadb</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git clone https://github.com/krisrang/dokku-mariadb mariadb</span><br><span class="line">dokku plugins-install</span><br></pre></td></tr></table></figure>
+<h2 id="step-3-configure-server"><a href="#step-3-configure-server" class="headerlink" title="step 3. configure server"></a>step 3. configure server</h2><p>time to configure, so our analytics app has what it needs.</p>
+<p>first make some directories on the server:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mkdir /var/www/analytics/</span><br><span class="line">mkdir /var/www/analytics/tmp/assets</span><br><span class="line">mkdir /var/www/analytics/tmp/cache</span><br><span class="line">mkdir /var/www/analytics/tmp/logs</span><br><span class="line">mkdir /var/www/analytics/tmp/tcpdf</span><br><span class="line">mkdir /var/www/analytics/tmp/templates_c</span><br><span class="line">mkdir /var/www/analytics/config</span><br></pre></td></tr></table></figure>
+<p>now from our local machine within our forked repo, let’s copy the global config to the server. (<em>note: we will need to do this if we ever update our repo to match upstream updates.</em>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp config/global.ini.php root@&lt;your-dokku-domain.tld&gt;:/var/www/analytics/config</span><br></pre></td></tr></table></figure>
+<p>next, change the permissions of our new directories and file.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chown -R nobody:nogroup /var/www/analytics/</span><br><span class="line">chmod -R 0755 /var/www/analytics/</span><br></pre></td></tr></table></figure>
+<p>then, we configure our app to use our new directories:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dokku docker-options:add analytics &quot;-v /var/www/analytics/tmp:/app/tmp&quot;</span><br><span class="line">dokku docker-options:add analytics &quot;-v /var/www/analytics/config:/app/config&quot;</span><br></pre></td></tr></table></figure>
+<p>restart!</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dokku ps:restart analytics</span><br></pre></td></tr></table></figure>
+<p>weee, our app should be up! browse to <code>http://analytics.&lt;your-dokku-domain.tld&gt;</code>. :)</p>
+<p>you should be presented with a Piwik welcome screen.</p>
+<p><img src="/images/setup0.png" alt="Piwik welcome screen"></p>
+<p>Piwik will perform a system check to make sure all is well. here’s what i got.</p>
+<p><img src="/images/setup1.png" alt="First half of Piwik system check"><br><img src="/images/setup2.png" alt="Second half of Piwik system check"></p>
+<p>next you will stumble upon a form asking for the database.</p>
+<p>let’s create a database! on the server:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dokku mariadb:start</span><br><span class="line">dokku mariadb:create analytics</span><br></pre></td></tr></table></figure>
+<p>after it creates and starts a database container, let’s fetch the generated credentials so we can input them into the form.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dokku config analytics</span><br></pre></td></tr></table></figure>
+<p><img src="/images/setup3.png" alt="output of env"></p>
+<p>“Database Host” is <code>&lt;DB_HOST&gt;:&lt;DB_PORT&gt;</code></p>
+<p>enter the details and you’ll be on your way. wooo, analytics!</p>
+<p>at this point everything should work, until you ever rebuild your app, in which case the database configuration might change without Piwik knowing about it. to solve this issue, edit <code>/var/www/analytics/config/config.ini.php</code> and replace the corresponding lines:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[database]</span><br><span class="line">host = $&#123;DB_HOST&#125;</span><br><span class="line">username = $&#123;DB_USER&#125;</span><br><span class="line">password = $&#123;DB_PASS&#125;</span><br><span class="line">dbname = $&#123;DB_NAME&#125;</span><br></pre></td></tr></table></figure>
+<p>sweet as. :)</p>
+<p>another thing we can do, recommended by Immortalin, is to <a href="http://piwik.org/faq/how-to-install/faq_133/" target="_blank" rel="noopener">use the database to store session files</a>. in <code>config/config.ini.php</code>, under the [General] section (add this section if it doesn’t already exist):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">session_save_handler = dbtable</span><br></pre></td></tr></table></figure>
+<p>again, this guide is a little rough around the edges, i can’t guarantee that everything works. if it does or does not, <a href="http://dinosaur.is" target="_blank" rel="noopener">message me</a>! &lt;3</p>
+
+  </section>
+</article>
+
+  <div class="sharing grid">
+  <section class="profile grid-item grid">
+    <img class="avatar" src="/images/avatar.jpg" alt="avatar" />
+    <div class="grid-item">
+      <p class="title"> life as a hippie hacker </p>
+      <p class="subtitle"> patterns of consciousness in a sea of matter </p>
+    <div>
+  </section>
+
+  <section class="share-btns">
+    <!-- <p> share it if you like it~ </p> -->
+    <a
+  class="twitter-share-button"
+  data-size="large"
+  data-via="DrakeLeung"
+  href="https://twitter.com/intent/tweet?text=Hi friend! :)</p>
+<p"
+>
+  Tweet
+</a>
+
+<script>
+  window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  js.async = true;
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));
+</script>
+
+  </section>
+</div>
+
+
+  
+</main>
+
+</body>
+</html>
