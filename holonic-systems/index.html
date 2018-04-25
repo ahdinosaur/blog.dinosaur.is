@@ -39,7 +39,9 @@
 
   <section class="article-entry">
     <p><a href="./life-as-a-holon">Holons</a> are fractal networks of agents, with some beautiful and powerful properties.</p>
-<h2 id="Definitions"><a href="#Definitions" class="headerlink" title="Definitions"></a>Definitions</h2><h3 id="What-is-a-holon"><a href="#What-is-a-holon" class="headerlink" title="What is a holon"></a>What is a holon</h3><p><a href="./life-as-a-holon">Holons</a> in a <a href="https://en.wikipedia.org/wiki/Multi-agent_system" target="_blank" rel="noopener">multi-agent system</a> are defined as follows:</p>
+<h2>Definitions</h2>
+<h3>What is a holon</h3>
+<p><a href="./life-as-a-holon">Holons</a> in a <a href="https://en.wikipedia.org/wiki/Multi-agent_system" target="_blank" rel="noopener">multi-agent system</a> are defined as follows:</p>
 <ul>
 <li>every holon is a superholon of a set of subholons.</li>
 </ul>
@@ -49,13 +51,57 @@
 <li>the head of a holon are subholons which represent the holon to the external environment.</li>
 <li>the body of a holon are subholons which are not allowed to represent the holon.</li>
 <li>each holon has a set of commmitments that defines the relationship inside the holon and is agreed on by all subholons at the time of joining the holon.</li>
-<li>holons are allowed to engage as subholons in several different holons at the same time, as long as this doesn’t contradict the sets of commitments of these superholons.</li>
+<li>holons are allowed to engage as subholons in several different holons at the same time, as long as this doesn't contradict the sets of commitments of these superholons.</li>
 </ul>
 <p>A holon is observed by its environment like any other agent. Only at closer inspection may it turn out that a holon is constructred from a set of agents, which may also consist of subholons. As any head of a holon has a unique identification, it is possible to communicate with each holon by sending messages to their addresses. As long as subholons intend to keep their commitments and as long as subholons do not make conflicting commitments, cycles in holon memberships are possible.</p>
-<h3 id="Properties-of-Holons"><a href="#Properties-of-Holons" class="headerlink" title="Properties of Holons"></a>Properties of Holons</h3><p>• A task holon is a holon that is generated to perform only a single task.<br>This notion is opposed to organisational holons, which are designed<br>to perform a series of jobs.<br>• Delegation of tasks between two subholons h1 and h2 of a holon h as<br>part of working towards the goal of h is called intra-holon delegation.<br>If two holons delegate tasks and this collaboration is not part of the<br>goal of an encompassing holon, this is called inter-holon delegation.<br>• A holon that is composed of subholons with identical ability types is<br>called a homogeneous holon. If abilities are different, the holon is<br>called a heterogeneous holon.<br>• Furthermore, we distinguish active and passive holons. An active<br>holon is a holon that has already been created, that has bound its<br>subholons by commitment to the holonic structure, and that has not<br>yet been terminated. Once it has been terminated and when it exists<br>only in the memory of the population, the structure is called a passive<br>holon.<br>• Active holons are divided into manifest and latent holons. If the sub-<br>holons committed to participate in the holon, and are committed to<br>dedicate, or actually have dedicated resources to it, or are performing<br>actions specifically in pursuit of the holons goals, the holon is called<br>manifest. If the holon is not terminated and is not currently influ-<br>encing a subholon’s actions, it is called latent. In contrast to passive<br>holons, latent holons can be activated instantaneously as there is still<br>a commitment of the subholons to participate in the holon in princi-<br>ple.<br>• Finally, a holon that is not atomic is called a holarchy. A holarchy<br>of which all nested subholons have only a single head holon, i.e. a<br>holarchy with a tree-like structure, is called a hierarchical holarchy.<br>The advantages of the holonic concept are threefold. First, this technology<br>preserves compatibility to multiagent systems by addressing every holon<br>as an agent, whether this agent represents a set of agents or not, is encap-<br>sulated. Second, as every agent may or may not represent a larger holon,<br>holonic multiagent systems are a way of introducing recursion to the mod-<br>elling of multiagent systems, which has proven to be a powerful mecha-<br>nism in software design to deal with complexity. Third, the concept does<br>not restrict us to a specified type of association between the agents, so it<br>leaves room to introduce organisational concepts at this point. To depict a<br>system of holons, we choose to define a novel type of diagram called holon<br>diagram. A holon diagram is similar to a Venn diagram in that it highlights<br>122 6. FORM - A Framework for Multiagent Organisation and Agent Autonomy<br>the relationships between the sets of subholons, but it also includes some<br>annotations that clarify names, resources and holon goals.</p>
+<h3>Properties of Holons</h3>
+<p>• A task holon is a holon that is generated to perform only a single task.
+This notion is opposed to organisational holons, which are designed
+to perform a series of jobs.
+• Delegation of tasks between two subholons h1 and h2 of a holon h as
+part of working towards the goal of h is called intra-holon delegation.
+If two holons delegate tasks and this collaboration is not part of the
+goal of an encompassing holon, this is called inter-holon delegation.
+• A holon that is composed of subholons with identical ability types is
+called a homogeneous holon. If abilities are different, the holon is
+called a heterogeneous holon.
+• Furthermore, we distinguish active and passive holons. An active
+holon is a holon that has already been created, that has bound its
+subholons by commitment to the holonic structure, and that has not
+yet been terminated. Once it has been terminated and when it exists
+only in the memory of the population, the structure is called a passive
+holon.
+• Active holons are divided into manifest and latent holons. If the sub-
+holons committed to participate in the holon, and are committed to
+dedicate, or actually have dedicated resources to it, or are performing
+actions specifically in pursuit of the holons goals, the holon is called
+manifest. If the holon is not terminated and is not currently influ-
+encing a subholon’s actions, it is called latent. In contrast to passive
+holons, latent holons can be activated instantaneously as there is still
+a commitment of the subholons to participate in the holon in princi-
+ple.
+• Finally, a holon that is not atomic is called a holarchy. A holarchy
+of which all nested subholons have only a single head holon, i.e. a
+holarchy with a tree-like structure, is called a hierarchical holarchy.
+The advantages of the holonic concept are threefold. First, this technology
+preserves compatibility to multiagent systems by addressing every holon
+as an agent, whether this agent represents a set of agents or not, is encap-
+sulated. Second, as every agent may or may not represent a larger holon,
+holonic multiagent systems are a way of introducing recursion to the mod-
+elling of multiagent systems, which has proven to be a powerful mecha-
+nism in software design to deal with complexity. Third, the concept does
+not restrict us to a specified type of association between the agents, so it
+leaves room to introduce organisational concepts at this point. To depict a
+system of holons, we choose to define a novel type of diagram called holon
+diagram. A holon diagram is similar to a Venn diagram in that it highlights
+122 6. FORM - A Framework for Multiagent Organisation and Agent Autonomy
+the relationships between the sets of subholons, but it also includes some
+annotations that clarify names, resources and holon goals.</p>
 <p><img src="/images/holon-diagram.png" alt="An example for a holon diagram"></p>
-<h2 id="Spectrum-of-Holons"><a href="#Spectrum-of-Holons" class="headerlink" title="Spectrum of Holons"></a>Spectrum of Holons</h2><p>##</p>
-<h2 id="Resources"><a href="#Resources" class="headerlink" title="Resources"></a>Resources</h2><ul>
+<h2>Spectrum of Holons</h2>
+<h2></h2>
+<h2>Resources</h2>
+<ul>
 <li><a href="http://www.researchgate.net/publication/235424370_Multiagent_Robustness_Autonomy_vs._Organisation/file/d912f511621b522bea.pdf" target="_blank" rel="noopener">Multiagent Robustness: Authonomy vs. Organisation</a></li>
 </ul>
 
